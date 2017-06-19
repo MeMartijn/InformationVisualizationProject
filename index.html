@@ -8,141 +8,138 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #eee;
         }
+
         #graphs {
             width: 1000px;
             height: 600px;
-            border: 1px dotted green;
         }
+
         #worldmap {
             position: relative;
             width: 100%;
             height: 600px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         }
+
         .scale {
             zoom: 150%;
         }
+
         #input input {
             width: 100%;
             background: transparent;
         }
+
         nav {
-            background-color: grey;
+            margin-left: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #fff;
             display: flex;
             flex-direction: column;
         }
+
         nav div {
-            border: 2px solid darkgrey;
             text-align: center;
             display: flex;
+            position: relative;
             justify-content: space-between;
             align-items: center;
         }
+
+
         nav img {
             margin: 5px;
             width: 40px;
             height: 40px;
             cursor: pointer;
         }
+
         nav p {
             display: none;
             font-size: 10px;
+            position: absolute;
+            /*TODO: Transitioning still does not work*/
+            transition: all 0.4s ease-in-out;
+            padding: 10px;
+            opacity: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
             font-family: sans-serif;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #fff;
+            z-index: -1;
         }
-        .visible {
-            display: inline-block;
+
+        nav div:hover p{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            left: 98%;
         }
     </style>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="http://datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
+    <script src="//datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
 </head>
 <body>
-    <div id="graphs">
-        <div id="areachart">
+<div id="graphs">
+    <div id="areachart"></div>
+    <div id="input"><input type="range" name="year" min="1970" max="2015" value="1970"></div>
+    <div id="worldmap"></div>
+</div>
+<nav>
+    <div><img src="assets/0.svg" data-attacktype="0"/></div>
+    <div><img src="assets/1.svg" data-attacktype="1"/></div>
+    <div><img src="assets/2.svg" data-attacktype="2"/></div>
+    <div><img src="assets/3.svg" data-attacktype="3"/></div>
+    <div><img src="assets/4.svg" data-attacktype="4"/></div>
+    <div><img src="assets/5.svg" data-attacktype="5"/></div>
+    <div><img src="assets/6.svg" data-attacktype="6"/></div>
+    <div><img src="assets/7.svg" data-attacktype="7"/></div>
+    <div><img src="assets/8.svg" data-attacktype="8"/></div>
+    <div><img src="assets/9.svg" data-attacktype="9"/></div>
+</nav>
+<script>
+    // Variable declaration
+    var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
+    var yearInput = document.querySelector("#input input");
+    var countries = document.querySelectorAll(".datamaps-subunits path");
+    var imageButtons = document.querySelectorAll("nav div img");
 
-        </div>
-        <div id="input">
-            <input type="range" name="year" min="1970" max="2015" value="1970">
-        </div>
-        <div id="worldmap">
+    // Generate map
+    var map = new Datamap({
+        element: document.getElementById("worldmap"),
+        geographyConfig: {
+            popupOnHover: false
+        }
+    });
 
-        </div>
-    </div>
-    <nav>
-        <div>
-            <img src="assets/0.svg" data-attacktype="0"/>
-        </div>
-        <div>
-            <img src="assets/1.svg" data-attacktype="1"/>
-        </div>
-        <div>
-            <img src="assets/2.svg" data-attacktype="2"/>
-        </div>
-        <div>
-            <img src="assets/3.svg" data-attacktype="3"/>
-        </div>
-        <div>
-            <img src="assets/4.svg" data-attacktype="4"/>
-        </div>
-        <div>
-            <img src="assets/5.svg" data-attacktype="5"/>
-        </div>
-        <div>
-            <img src="assets/6.svg" data-attacktype="6"/>
-        </div>
-        <div>
-            <img src="assets/7.svg" data-attacktype="7"/>
-        </div>
-        <div>
-            <img src="assets/8.svg" data-attacktype="8"/>
-        </div>
-        <div>
-            <img src="assets/9.svg" data-attacktype="9"/>
-        </div>
-    </nav>
-
-    <script>
-        // Variable declaration
-        var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
-        var yearInput = document.querySelector("#input input");
-        var countries = document.querySelectorAll(".datamaps-subunits path");
-        var imageButtons = document.querySelectorAll("nav div img");
-
-        // Generate map
-        var map = new Datamap({
-            element: document.getElementById("worldmap"),
-            geographyConfig: {
-                popupOnHover: false
-            }
-        });
-
-        // Add names to image labels
-        imageButtons.forEach(function(image){
-            // Add paragraph with attack type
-            var node = document.createElement("P");
-            var textNode = document.createTextNode(attackTypes[image.dataset.attacktype]);
-            node.appendChild(textNode);
-            image.parentNode.appendChild(node);
-
-            // Add event listener for hover
-            image.addEventListener("mouseover", function(event){
-                this.nextElementSibling.classList.toggle("visible");
-            })
-        });
+    // Add names to image labels
+    imageButtons.forEach(function (image) {
+        // Add paragraph with attack type
+        var node = document.createElement("P");
+        var textNode = document.createTextNode(attackTypes[image.dataset.attacktype]);
+        node.appendChild(textNode);
+        image.parentNode.appendChild(node);
+    });
 
 
-        // Create zoom effect on countries
-        countries.forEach(function(country) {
-            country.addEventListener("click", function(event){
-                country.classList.toggle("scale");
-            })
-        });
-
-        // Get input values
-        yearInput.addEventListener("input", function(event){
-            console.log(this.value);
+    // Create zoom effect on countries
+    countries.forEach(function (country) {
+        country.addEventListener("click", function (event) {
+            country.classList.toggle("scale");
         })
-    </script>
+    });
+
+    // Get input values
+    yearInput.addEventListener("input", function (event) {
+        console.log(this.value);
+    })
+</script>
 </body>
 </html>
