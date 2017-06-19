@@ -9,11 +9,9 @@
         }
 
         section {
-            height:100vh;
-            width:100vw;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
         }
 
         #graphs {
@@ -27,10 +25,6 @@
             height: 600px;
             background: #fff;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-        }
-
-        .scale {
-            zoom: 150%;
         }
 
         #input {
@@ -97,16 +91,16 @@
             background: #eee;
         }
 
+        #map_controls {
+            align-self: flex-start;
+        }
+
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="//datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
 </head>
 <body>
-
-<section>
-
-</section>
 
 <section id="worldmap">
     <nav id="map_controls">
