@@ -82,7 +82,7 @@
             left: 98%;
         }
     </style>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="//datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
 </head>
@@ -106,6 +106,7 @@
 </nav>
 <script>
     // Variable declaration
+    var dataset = "dataset/globalterrorismdb.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#input input");
     var countries = document.querySelectorAll(".datamaps-subunits path");
@@ -120,29 +121,31 @@
     };
     var width = 1000 - margin.left - margin.right;
     var height = 600 - margin.top - margin.bottom;
-    var color = d3.scale.category10();
-    var x = d3.scaleBand()
-        .range([0, width])
-        .padding(0.1);
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+    var parseDate = d3.timeParse('%Y');
+    var x = d3.scaleTime()
+        .range([0, width]);
     var y = d3.scaleLinear()
         .range([height, 0]);
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");
-    var area = d3.svg.area()
-        .x(function(d) {return x(d.iyear);})
-        .y0(function(d) {return y(d.y0);})
-        .y1(function(d) {return y(d.y0 + d.y);});
-    var stack = d3.layout.stack()
-        .values(function(d) {return d.values;});
+    var xAxis = d3.axisBottom()
+        .scale(x);
+    var yAxis = d3.axisLeft()
+        .scale(y);
+    var area = d3.area()
+        .x(function(d) {return x(d.data.iyear);})
+        .y0(function(d) {return y(d[0]);})
+        .y1(function(d) {return y(d[1]);});
+    var stack = d3.stack();
     var svg = d3.select("#areachart").append("svg")
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Generate stacked area chart
+    d3.csv(dataset, function(error, data) {
+        if (error) throw error;
+    });
 
     // Generate map
     var map = new Datamap({
