@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Global Terrorism Database: history of attacks 💣</title>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         #graphs {
             width: 1000px;
             height: 600px;
@@ -19,8 +24,33 @@
         }
         #input input {
             width: 100%;
-            border: 1px solid green;
             background: transparent;
+        }
+        nav {
+            background-color: grey;
+            display: flex;
+            flex-direction: column;
+        }
+        nav div {
+            border: 2px solid darkgrey;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav img {
+            margin: 5px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        nav p {
+            display: none;
+            font-size: 10px;
+            font-family: sans-serif;
+        }
+        .visible {
+            display: inline-block;
         }
     </style>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
@@ -40,21 +70,46 @@
         </div>
     </div>
     <nav>
-        <img src="" data-type="0"/>
-        <img src="" data-type="1"/>
-        <img src="" data-type="2"/>
-        <img src="" data-type="3"/>
-        <img src="" data-type="4"/>
-        <img src="" data-type="5"/>
-        <img src="" data-type="6"/>
-        <img src="" data-type="7"/>
-        <img src="" data-type="8"/>
-        <img src="" data-type="9"/>
+        <div>
+            <img src="assets/0.svg" data-attacktype="0"/>
+        </div>
+        <div>
+            <img src="assets/1.svg" data-attacktype="1"/>
+        </div>
+        <div>
+            <img src="assets/2.svg" data-attacktype="2"/>
+        </div>
+        <div>
+            <img src="assets/3.svg" data-attacktype="3"/>
+        </div>
+        <div>
+            <img src="assets/4.svg" data-attacktype="4"/>
+        </div>
+        <div>
+            <img src="assets/5.svg" data-attacktype="5"/>
+        </div>
+        <div>
+            <img src="assets/6.svg" data-attacktype="6"/>
+        </div>
+        <div>
+            <img src="assets/7.svg" data-attacktype="7"/>
+        </div>
+        <div>
+            <img src="assets/8.svg" data-attacktype="8"/>
+        </div>
+        <div>
+            <img src="assets/9.svg" data-attacktype="9"/>
+        </div>
     </nav>
 
     <script>
+        // Variable declaration
         var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
         var yearInput = document.querySelector("#input input");
+        var countries = document.querySelectorAll(".datamaps-subunits path");
+        var imageButtons = document.querySelectorAll("nav div img");
+
+        // Generate map
         var map = new Datamap({
             element: document.getElementById("worldmap"),
             geographyConfig: {
@@ -62,12 +117,29 @@
             }
         });
 
-        var countries = document.querySelectorAll(".datamaps-subunits path");
+        // Add names to image labels
+        imageButtons.forEach(function(image){
+            // Add paragraph with attack type
+            var node = document.createElement("P");
+            var textNode = document.createTextNode(attackTypes[image.dataset.attacktype]);
+            node.appendChild(textNode);
+            image.parentNode.appendChild(node);
+
+            // Add event listener for hover
+            image.addEventListener("mouseover", function(event){
+                this.nextElementSibling.classList.toggle("visible");
+            })
+        });
+
+
+        // Create zoom effect on countries
         countries.forEach(function(country) {
             country.addEventListener("click", function(event){
                 country.classList.toggle("scale");
             })
         });
+
+        // Get input values
         yearInput.addEventListener("input", function(event){
             console.log(this.value);
         })
