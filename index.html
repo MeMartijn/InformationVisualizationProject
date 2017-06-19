@@ -5,10 +5,15 @@
     <title>Global Terrorism Database: history of attacks 💣</title>
     <style>
         body {
+            background: #eee;
+        }
+
+        section {
+            height:100vh;
+            width:100vw;
             display: flex;
             justify-content: center;
-            align-items: center;
-            background: #eee;
+            align-items: flex-start;
         }
 
         #graphs {
@@ -16,7 +21,7 @@
             height: 600px;
         }
 
-        #worldmap {
+        #worldmap_graph {
             position: relative;
             width: 100%;
             height: 600px;
@@ -28,17 +33,22 @@
             zoom: 150%;
         }
 
+        #input {
+            height: 30px;
+        }
+
         #input input {
             width: 100%;
             background: transparent;
         }
 
         nav {
-            margin-left: 10px;
+            margin: 0 10px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
             background: #fff;
             display: flex;
             flex-direction: column;
+            margin-top: 30px;
         }
 
         nav div {
@@ -48,7 +58,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
 
         nav img {
             margin: 5px;
@@ -74,43 +83,62 @@
             z-index: -1;
         }
 
-        nav div:hover p{
+        nav div:hover p {
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 1;
             left: 98%;
         }
+
+        .divider {
+            margin-bottom: 10px;
+            height: 1px;
+            background: #eee;
+        }
+
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="//datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
 </head>
 <body>
-<div id="graphs">
-    <div id="areachart"></div>
-    <div id="input"><input type="range" name="year" min="1970" max="2015" value="1970"></div>
-    <div id="worldmap"></div>
-</div>
-<nav>
-    <div><img src="assets/0.svg" data-attacktype="0"/></div>
-    <div><img src="assets/1.svg" data-attacktype="1"/></div>
-    <div><img src="assets/2.svg" data-attacktype="2"/></div>
-    <div><img src="assets/3.svg" data-attacktype="3"/></div>
-    <div><img src="assets/4.svg" data-attacktype="4"/></div>
-    <div><img src="assets/5.svg" data-attacktype="5"/></div>
-    <div><img src="assets/6.svg" data-attacktype="6"/></div>
-    <div><img src="assets/7.svg" data-attacktype="7"/></div>
-    <div><img src="assets/8.svg" data-attacktype="8"/></div>
-    <div><img src="assets/9.svg" data-attacktype="9"/></div>
-</nav>
+
+<section>
+
+</section>
+
+<section id="worldmap">
+    <nav id="map_controls">
+        <div><img src="assets/play.svg" id="playbutton"/></div>
+    </nav>
+    <div id="graphs">
+        <div id="areachart"></div>
+        <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
+        <div id="worldmap_graph"></div>
+    </div>
+    <nav id="map_methods">
+        <div><img src="assets/0.svg" data-attacktype="0"/></div>
+        <div><img src="assets/1.svg" data-attacktype="1"/></div>
+        <div><img src="assets/2.svg" data-attacktype="2"/></div>
+        <div><img src="assets/3.svg" data-attacktype="3"/></div>
+        <div><img src="assets/4.svg" data-attacktype="4"/></div>
+        <div><img src="assets/5.svg" data-attacktype="5"/></div>
+        <div><img src="assets/6.svg" data-attacktype="6"/></div>
+        <div><img src="assets/7.svg" data-attacktype="7"/></div>
+        <div><img src="assets/8.svg" data-attacktype="8"/></div>
+        <div><img src="assets/9.svg" data-attacktype="9"/></div>
+    </nav>
+</section>
 <script>
     // Variable declaration
     var dataset = "dataset/globalterrorismdb.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#input input");
     var countries = document.querySelectorAll(".datamaps-subunits path");
-    var imageButtons = document.querySelectorAll("nav div img");
+    var timeSlider = document.querySelector("#timeslider");
+    var playbutton = document.querySelector("#playbutton");
+    var imageButtons = document.querySelectorAll("#map_methods div img");
 
     // Area chart variables
     var margin = {
@@ -149,24 +177,10 @@
 
     // Generate map
     var map = new Datamap({
-        element: document.getElementById("worldmap"),
+        element: document.getElementById("worldmap_graph"),
         geographyConfig: {
             popupOnHover: false
         }
-    });
-
-    // Add names to image labels
-    imageButtons.forEach(function(image){
-        // Add paragraph with attack type
-        var node = document.createElement("P");
-        var textNode = document.createTextNode(attackTypes[image.dataset.attacktype]);
-        node.appendChild(textNode);
-        image.parentNode.appendChild(node);
-
-        // Add event listener for hover
-        image.addEventListener("mouseover", function(event){
-            this.nextElementSibling.classList.toggle("visible");
-        })
     });
 
     // Add names to image labels
@@ -190,6 +204,12 @@
     yearInput.addEventListener("input", function (event) {
         console.log(this.value);
     })
+
+
+    country.addEventListener("click", function (event) {
+        country.classList.toggle("scale");
+    })
+
 </script>
 </body>
 </html>
