@@ -127,10 +127,10 @@
 <script>
     // Variable declaration
     var dataset = "dataset/globalterrorismdb.csv";
+    var attacksDataset = "dataset/attacktypes.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#input input");
     var countries = document.querySelectorAll(".datamaps-subunits path");
-    var timeSlider = document.querySelector("#timeslider");
     var playbutton = document.querySelector("#playbutton");
     var imageButtons = document.querySelectorAll("#map_methods div img");
 
@@ -165,8 +165,62 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Generate stacked area chart
-    d3.csv(dataset, function(error, data) {
+    d3.csv(attacksDataset, function(error, data) {
         if (error) throw error;
+        color.domain(d3.keys(data[0]).filter(function(key) {
+            return key !== 'Year'
+        }));
+        var keys = data.columns.filter(function(key) {
+            return key !== 'Year'
+        });
+        data.forEach(function(d) {
+            d.Year = parseDate(d.Year);
+        });
+        tsvData = (function() {
+            return data;
+        })();
+
+        var maxVal = d3.max(data, function(d) {
+            var vals = d3.keys(d).map(function(key){
+                if (key !== 'Year') {
+                    return d[key];
+                } else {
+                    return 0;
+                }
+            });
+            return d3.sum(vals);
+        });
+
+        x.domain(d3.extent(data, function(d) {
+            return d.Year
+        }));
+        y.domain([0, maxVal]);
+
+        stack.keys(keys);
+        stack.order(d3.stackOrderNone);
+        stack.offset(d3.stackOffsetNone);
+
+        var stackedArea = svg.selectAll(".area")
+            .data(stack(data))
+            .enter()
+            .append("g")
+            .attr("class", function(d){
+                return 'stackedArea ' + d.key
+            });
+
+        stackedArea.append("path")
+            .attr("class", "area")
+            .attr("d", area)
+            .style("fill", function(d) {
+                return color(d.key);
+            });
+
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .call(yAxis);
     });
 
     // Generate map
@@ -197,8 +251,7 @@
     // Get input values
     yearInput.addEventListener("input", function (event) {
         console.log(this.value);
-    })
-
+    });
 
     country.addEventListener("click", function (event) {
         country.classList.toggle("scale");
