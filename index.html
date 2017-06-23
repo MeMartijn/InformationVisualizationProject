@@ -100,9 +100,11 @@
         }
 
     </style>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="//datamaps.github.io/scripts/0.4.4/datamaps.world.min.js"></script>
+    <link href="d3-geomap/css/d3.geomap.css" rel="stylesheet">
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>-->
+    <!--<script src="d3-geomap/vendor/d3.geomap.dependencies.min.js"></script>-->
+    <script src="d3-geomap/js/d3.geomap.min.js"></script>
 </head>
 <body>
 
@@ -113,7 +115,7 @@
     <div id="graphs">
         <div id="areachart"></div>
         <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
-        <div id="worldmap_graph"></div>
+        <div id="map"></div>
     </div>
     <nav id="map_methods">
         <div><img src="assets/0.svg" data-attacktype="0"/></div>
@@ -236,12 +238,11 @@
     });
 
     // Generate map
-    var map = new Datamap({
-        element: document.getElementById("worldmap_graph"),
-        geographyConfig: {
-            popupOnHover: false
-        }
-    });
+    var map = d3.geomap()
+        .geofile('/d3-geomap/topojson/world/countries.json');
+
+    d3.select('#map')
+        .call(map.draw, map);
 
     // Add names to image labels
     imageButtons.forEach(function (image) {
@@ -252,22 +253,10 @@
         image.parentNode.appendChild(node);
     });
 
-
-    // Create zoom effect on countries
-    countries.forEach(function (country) {
-        country.addEventListener("click", function (event) {
-            country.classList.toggle("scale");
-        })
-    });
-
     // Get input values
     yearInput.addEventListener("input", function (event) {
         console.log(this.value);
     });
-
-    country.addEventListener("click", function (event) {
-        country.classList.toggle("scale");
-    })
 
 </script>
 </body>
