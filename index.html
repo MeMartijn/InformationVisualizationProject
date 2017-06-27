@@ -130,7 +130,7 @@
 <script>
 
     // Variable declaration
-    var dataset = "dataset/globalterrorismdb.csv";
+    var dataset = "dataset/condensed.csv";
     var attacksDataset = "dataset/attacktypes.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#input input");
@@ -282,6 +282,7 @@
             .call(yAxis);
     });
 
+
     // Map variables
     var worldmap = d3.select("#map")
         .append("svg")
@@ -298,8 +299,23 @@
     // Generate map
     queue()
         .defer(d3.json, "dataset/world_countries.json")
-        .await(function(error, data){
+        .defer(d3.csv, dataset)
+        .await(function(error, data, attacks){
             if (error) throw error;
+
+            attacks.forEach(function(d) {
+                d.year   =  +d["iyear"];
+                d.type = attackTypes[+d["attacktype1"]];
+                d.typeno = +d["attacktype1"];
+                d.long  = +d["longitude"];
+                d.lat  = +d["latitude"];
+                d.sum  = d["summary"];
+                d.crit1 = +d["crit1"];
+                d.crit2 = +d["crit2"];
+                d.crit3 = +d["crit3"];
+                d.group = d["gname"];
+                d.kills = +d["nkill"];
+            });
 
             worldmap.append("g")
                 .attr("class", "countries")
@@ -322,6 +338,28 @@
                 }))
                 .attr("class", "names")
                 .attr("d", path);
+
+            worldmap.append("g")
+                .attr("class", "localAttacks")
+                .selectAll("circle")
+                .data(attacks)
+                .enter()
+                .append("svg:image")
+                .attr("class", function(d) {
+                    return d.year
+                })
+                .attr("xlink:href", function(d) {
+                    return "assets/" + d.typeno + ".svg";
+                })
+                .attr("width", function(d) {
+                    return 5;
+                })
+                .attr("height", function(d) {
+                    return 5;
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + projection([d.long,d.lat]) + ")";
+                });
         });
 
 
@@ -351,6 +389,7 @@
             .duration(500)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
     }
+
 
     // Get input values
     yearInput.addEventListener("input", function (event) {
