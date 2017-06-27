@@ -90,6 +90,7 @@
 
         #map_controls {
             align-self: flex-start;
+            margin-top: 620px;
         }
 
     </style>
@@ -109,16 +110,46 @@
         <div id="map"></div>
     </div>
     <nav id="map_methods">
-        <div><img src="assets/0.svg" data-attacktype="0"/></div>
-        <div><img src="assets/1.svg" data-attacktype="1"/></div>
-        <div><img src="assets/2.svg" data-attacktype="2"/></div>
-        <div><img src="assets/3.svg" data-attacktype="3"/></div>
-        <div><img src="assets/4.svg" data-attacktype="4"/></div>
-        <div><img src="assets/5.svg" data-attacktype="5"/></div>
-        <div><img src="assets/6.svg" data-attacktype="6"/></div>
-        <div><img src="assets/7.svg" data-attacktype="7"/></div>
-        <div><img src="assets/8.svg" data-attacktype="8"/></div>
-        <div><img src="assets/9.svg" data-attacktype="9"/></div>
+      <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: white'/></div>
+      <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: white'/></div>
+      <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: white'/></div>
+      <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: white'/></div>
+      <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: white'/></div>
+      <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: white'/></div>
+      <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: white'/></div>
+      <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: white'/></div>
+      <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: white'/></div>
+      <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: white'/></div>
+
+      <!--opacity change script that changes opacity when user clicks a specific attacktype icon-->
+
+      <script>
+      function opacityFunction(i) {
+        if (d3.select("#b-" + i).style("fill-opacity") == 0.5) {
+           d3.select("#b-" + i).transition()
+            .duration(400)
+            .style("fill-opacity", 1.0)
+        } else {
+          d3.select("#b-" + i).transition()
+          .duration(400)
+          .style("fill-opacity", 0.5);
+        }
+      };
+
+      //change the icon backgroundcolor to match the color of the areachart color if active
+      function backgroundActive(i){
+          var id = document.getElementById('attacktype' + i);
+          if (id.style.backgroundColor !== "white") {
+              console.log(" ello");
+              id.style.backgroundColor = "white";
+              id.style.transition = "all 1s";
+          } else {
+              id.style.backgroundColor = color(attackTypes[i]);
+              id.style.transition = "all 1s";
+          }
+      };
+      </script>
+
     </nav>
 </section>
 <script>
@@ -221,6 +252,7 @@
                 return attackTypes.indexOf(d.key);
             })
             .attr('fill-opacity', 0.5);
+            .attr("id", function(d, i) { return "b-" + i; })
 
         stackedArea.append("path")
             .attr("class", "area")
