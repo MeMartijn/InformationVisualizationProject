@@ -24,8 +24,13 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         }
 
+        #map{
+            margin-bottom:50px;
+        }
+
         #input {
             height: 30px;
+            padding: 5px 25px 5px 45px;
         }
 
         #input input {
@@ -40,6 +45,8 @@
             display: flex;
             flex-direction: column;
             margin-top: 30px;
+            overflow:hidden;
+            border-radius:4px;
         }
 
         nav div {
@@ -59,7 +66,7 @@
             border-radius: 25%;
         }
 
-        nav p {
+        nav div p {
             display: none;
             font-size: 10px;
             position: absolute;
@@ -84,16 +91,12 @@
             left: 98%;
         }
 
-        .divider {
-            margin-bottom: 10px;
-            height: 1px;
-            background: #eee;
-        }
-
-        #map_controls {
-            align-self: flex-start;
-            margin-top: 620px;
-        }
+        #playbutton { align-self: flex-start; margin-top: 620px; transition: all 0.4s ease-in-out; background: #fff;}
+        #playbutton #play { display:block; }
+        #playbutton #stop { display:none; }
+        #playbutton.active { box-shadow: 0 3px 6px rgba(0,0,0,0.23), 0 1px 2px rgba(0, 0, 0, 0.24); background: #90a4ae; }
+        #playbutton.active #play { display:none; }
+        #playbutton.active #stop { display:block; }
 
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -102,9 +105,10 @@
 </head>
 <body>
 
-<section id="worldmap">
-    <nav id="map_controls">
-        <div><img src="assets/play.svg" id="playbutton"/></div>
+<section>
+    <nav id="playbutton">
+        <img id="play" src="assets/play.svg" />
+        <img id="stop" src="assets/stop.svg" />
     </nav>
     <div id="graphs">
         <div id="areachart"></div>
@@ -137,6 +141,9 @@
     var countries = document.querySelectorAll(".datamaps-subunits path");
     var playbutton = document.querySelector("#playbutton");
     var imageButtons = document.querySelectorAll("#map_methods div img");
+    var year = 1970;
+    var running = false;
+    var animationTimer;
 
 
     // Add names to image labels
@@ -149,12 +156,34 @@
     });
 
 
-    // Timing function
-    var running = false;
-    playbutton.addEventListener("click", function (event) {
-        console.log(this.src);
+    // Get input values
+    yearInput.addEventListener("input", function (event) {
+        year = this.value;
+        updateView();
     });
 
+    // Timing function
+    playbutton.addEventListener("click", function (event) {
+
+        running = !running;
+        if(running){
+            this.classList.add("active");
+            animationTimer = setInterval(function(){
+                year++;
+                yearInput.value = year;
+                updateView();
+            }, 1000);
+        }else{
+            this.classList.remove("active");
+            clearInterval(animationTimer)
+        }
+
+    });
+
+    // The actual handler for applying changes. Use the global year variable.
+    function updateView(){
+        console.log(year);
+    }
 
     // Opacity map function
     function opacityFunction(i) {
@@ -389,13 +418,7 @@
             .duration(500)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
     }
-
-
-    // Get input values
-    yearInput.addEventListener("input", function (event) {
-        console.log(this.value);
-    });
-
+    
 </script>
 </body>
 </html>
