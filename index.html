@@ -125,36 +125,10 @@
 
       <!--opacity change script that changes opacity when user clicks a specific attacktype icon-->
 
-      <script>
-      function opacityFunction(i) {
-        if (d3.select("#b-" + i).style("fill-opacity") == 0.5) {
-           d3.select("#b-" + i).transition()
-            .duration(400)
-            .style("fill-opacity", 1.0)
-        } else {
-          d3.select("#b-" + i).transition()
-          .duration(400)
-          .style("fill-opacity", 0.5);
-        }
-      };
-
-      //change the icon backgroundcolor to match the color of the areachart color if active
-      function backgroundActive(i){
-          var id = document.getElementById('attacktype' + i);
-          if (id.style.backgroundColor !== "white") {
-              console.log(" ello");
-              id.style.backgroundColor = "white";
-              id.style.transition = "all 1s";
-          } else {
-              id.style.backgroundColor = color(attackTypes[i]);
-              id.style.transition = "all 1s";
-          }
-      };
-      </script>
-
     </nav>
 </section>
 <script>
+
     // Variable declaration
     var dataset = "dataset/globalterrorismdb.csv";
     var attacksDataset = "dataset/attacktypes.csv";
@@ -164,6 +138,7 @@
     var playbutton = document.querySelector("#playbutton");
     var imageButtons = document.querySelectorAll("#map_methods div img");
 
+
     // Add names to image labels
     imageButtons.forEach(function (image) {
         // Add paragraph with attack type
@@ -172,6 +147,41 @@
         node.appendChild(textNode);
         image.parentNode.appendChild(node);
     });
+
+
+    // Timing function
+    var running = false;
+    playbutton.addEventListener("click", function (event) {
+        console.log(this.src);
+    });
+
+
+    // Opacity map function
+    function opacityFunction(i) {
+        if (d3.select("#b-" + i).style("fill-opacity") == 0.5) {
+            d3.select("#b-" + i).transition()
+                .duration(400)
+                .style("fill-opacity", 1.0)
+        } else {
+            d3.select("#b-" + i).transition()
+                .duration(400)
+                .style("fill-opacity", 0.5);
+        }
+    };
+
+
+    // Change the icon backgroundcolor to match the color of the areachart color if active
+    function backgroundActive(i){
+        var id = document.getElementById('attacktype' + i);
+        if (id.style.backgroundColor !== "white") {
+            id.style.backgroundColor = "white";
+            id.style.transition = "all 1s";
+        } else {
+            id.style.backgroundColor = color(attackTypes[i]);
+            id.style.transition = "all 1s";
+        }
+    };
+
 
     // Area chart variables
     var margin = {
@@ -208,6 +218,7 @@
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
     // Generate stacked area chart
     d3.csv(attacksDataset, function(error, data) {
@@ -283,36 +294,36 @@
         .translate([width/2, height/1.5]);
     var path = d3.geoPath().projection(projection);
 
+
     // Generate map
     queue()
         .defer(d3.json, "dataset/world_countries.json")
-        .await(ready);
+        .await(function(error, data){
+            if (error) throw error;
 
-    function ready(error, data) {
-        if (error) throw error;
+            worldmap.append("g")
+                .attr("class", "countries")
+                .selectAll("path")
+                .data(data.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .style("fill", function(d) {
+                    return color(0);
+                })
+                .style("stroke", "white")
+                .style("opacity", 0.5)
+                .attr("class", "country")
+                .on("click", clicked);
 
-        worldmap.append("g")
-            .attr("class", "countries")
-            .selectAll("path")
-            .data(data.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .style("fill", function(d) {
-                return color(0);
-            })
-            .style("stroke", "white")
-            .style("opacity", 0.5)
-            .attr("class", "country")
-            .on("click", clicked);
+            worldmap.append("path")
+                .datum(topojson.mesh(data.features, function(a, b) {
+                    return a.id !== b.id;
+                }))
+                .attr("class", "names")
+                .attr("d", path);
+        });
 
-        worldmap.append("path")
-            .datum(topojson.mesh(data.features, function(a, b) {
-                return a.id !== b.id;
-            }))
-            .attr("class", "names")
-            .attr("d", path);
-    }
 
     // Zoom map function
     var centered;
