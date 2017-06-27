@@ -141,6 +141,8 @@
     var countries = document.querySelectorAll(".datamaps-subunits path");
     var playbutton = document.querySelector("#playbutton");
     var imageButtons = document.querySelectorAll("#map_methods div img");
+    var totalWidth = 1000;
+    var totalHeight = 600;
     var year = 1970;
     var running = false;
     var animationTimer;
@@ -219,8 +221,8 @@
         bottom: 30,
         left: 50
     };
-    var width = 1000 - margin.left - margin.right;
-    var height = 600 - margin.top - margin.bottom;
+    var width = totalWidth - margin.left - margin.right;
+    var height = totalHeight - margin.top - margin.bottom;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     var parseDate = d3.timeParse('%Y');
     var x = d3.scaleTime()
@@ -315,13 +317,13 @@
     // Map variables
     var worldmap = d3.select("#map")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", totalWidth)
+        .attr("height", totalHeight)
         .append("g")
         .attr("class", "map");
     var projection = d3.geoMercator()
         .scale(130)
-        .translate([width/2, height/1.5]);
+        .translate([totalWidth/2, totalHeight/1.5]);
     var path = d3.geoPath().projection(projection);
 
 
@@ -418,7 +420,7 @@
             .duration(500)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
     }
-    
+
 </script>
 </body>
 </html>
