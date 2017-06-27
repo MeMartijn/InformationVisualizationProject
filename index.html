@@ -24,41 +24,34 @@
         <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
         <div id="map"></div>
     </div>
+    <nav id="map_methods">
+      <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
+      <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
+      <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: rgb(44, 160, 44)'/></div>
+      <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: rgb(214, 39, 40)'/></div>
+      <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: rgb(148, 103, 189)'/></div>
+      <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: rgb(140, 86, 75)'/></div>
+      <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: rgb(227, 119, 194)'/></div>
+      <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
+      <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
+      <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
+
+      <!--opacity change script that changes opacity when user clicks a specific attacktype icon-->
+
+    </nav>
 </section>
-
-<nav id="map_methods">
-    <div><img src="assets/0.svg" id='attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)'
-              style='background-color: rgb(31, 119, 180)'/></div>
-    <div><img src="assets/1.svg" id='attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)'
-              style='background-color: rgb(255, 127, 14)'/></div>
-    <div><img src="assets/2.svg" id='attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)'
-              style='background-color: rgb(44, 160, 44)'/></div>
-    <div><img src="assets/3.svg" id='attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)'
-              style='background-color: rgb(214, 39, 40)'/></div>
-    <div><img src="assets/4.svg" id='attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)'
-              style='background-color: rgb(148, 103, 189)'/></div>
-    <div><img src="assets/5.svg" id='attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)'
-              style='background-color: rgb(140, 86, 75)'/></div>
-    <div><img src="assets/6.svg" id='attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)'
-              style='background-color: rgb(227, 119, 194)'/></div>
-    <div><img src="assets/7.svg" id='attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)'
-              style='background-color: rgb(127, 127, 127)'/></div>
-    <div><img src="assets/8.svg" id='attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)'
-              style='background-color: rgb(188, 189, 34)'/></div>
-    <div><img src="assets/9.svg" id='attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)'
-              style='background-color: rgb(23, 190, 207)'/></div>
-</nav>
-
 <script>
 
     // Variable declaration
-    var dataset = "dataset/globalterrorismdb.csv";
+    var dataset = "dataset/condensed.csv";
     var attacksDataset = "dataset/attacktypes.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#timeslider");
     var countries = document.querySelectorAll(".datamaps-subunits path");
     var playbutton = document.querySelector("#playbutton");
     var imageButtons = document.querySelectorAll("#map_methods div img");
+    var totalWidth = 1000;
+    var totalHeight = 600;
     var year = 1970;
     var running = false;
     var animationTimer = null;
@@ -137,8 +130,8 @@
         bottom: 30,
         left: 50
     };
-    var width = 1000 - margin.left - margin.right;
-    var height = 600 - margin.top - margin.bottom;
+    var width = totalWidth - margin.left - margin.right;
+    var height = totalHeight - margin.top - margin.bottom;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     var parseDate = d3.timeParse('%Y');
     var x = d3.scaleTime()
@@ -169,23 +162,23 @@
 
 
     // Generate stacked area chart
-    d3.csv(attacksDataset, function (error, data) {
+    d3.csv(attacksDataset, function(error, data) {
         if (error) throw error;
-        color.domain(d3.keys(data[0]).filter(function (key) {
+        color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== 'Year'
         }));
-        var keys = data.columns.filter(function (key) {
+        var keys = data.columns.filter(function(key) {
             return key !== 'Year'
         });
-        data.forEach(function (d) {
+        data.forEach(function(d) {
             d.Year = parseDate(d.Year);
         });
-        tsvData = (function () {
+        tsvData = (function() {
             return data;
         })();
 
-        var maxVal = d3.max(data, function (d) {
-            var vals = d3.keys(d).map(function (key) {
+        var maxVal = d3.max(data, function(d) {
+            var vals = d3.keys(d).map(function(key){
                 if (key !== 'Year') {
                     return d[key];
                 } else {
@@ -195,7 +188,7 @@
             return d3.sum(vals);
         });
 
-        x.domain(d3.extent(data, function (d) {
+        x.domain(d3.extent(data, function(d) {
             return d.Year
         }));
         y.domain([0, maxVal]);
@@ -209,18 +202,16 @@
             .enter()
             .append("g")
             .attr("class", "stackedArea")
-            .attr("data-attacktype", function (d) {
+            .attr("data-attacktype", function(d){
                 return attackTypes.indexOf(d.key);
             })
             .attr('fill-opacity', 1.0)
-            .attr("id", function (d, i) {
-                return "b-" + i;
-            });
+            .attr("id", function(d, i) { return "b-" + i; });
 
         stackedArea.append("path")
             .attr("class", "area")
             .attr("d", area)
-            .style("fill", function (d) {
+            .style("fill", function(d) {
                 return color(d.key);
             });
 
@@ -232,24 +223,40 @@
             .call(yAxis);
     });
 
+
     // Map variables
     var worldmap = d3.select("#map")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", totalWidth)
+        .attr("height", totalHeight)
         .append("g")
         .attr("class", "map");
     var projection = d3.geoMercator()
         .scale(130)
-        .translate([width / 2, height / 1.5]);
+        .translate([totalWidth/2, totalHeight/1.5]);
     var path = d3.geoPath().projection(projection);
 
 
     // Generate map
     queue()
         .defer(d3.json, "dataset/world_countries.json")
-        .await(function (error, data) {
+        .defer(d3.csv, dataset)
+        .await(function(error, data, attacks){
             if (error) throw error;
+
+            attacks.forEach(function(d) {
+                d.year   =  +d["iyear"];
+                d.type = attackTypes[+d["attacktype1"]];
+                d.typeno = +d["attacktype1"];
+                d.long  = +d["longitude"];
+                d.lat  = +d["latitude"];
+                d.sum  = d["summary"];
+                d.crit1 = +d["crit1"];
+                d.crit2 = +d["crit2"];
+                d.crit3 = +d["crit3"];
+                d.group = d["gname"];
+                d.kills = +d["nkill"];
+            });
 
             worldmap.append("g")
                 .attr("class", "countries")
@@ -258,7 +265,7 @@
                 .enter()
                 .append("path")
                 .attr("d", path)
-                .style("fill", function (d) {
+                .style("fill", function(d) {
                     return color(0);
                 })
                 .style("stroke", "white")
@@ -267,11 +274,33 @@
                 .on("click", clicked);
 
             worldmap.append("path")
-                .datum(topojson.mesh(data.features, function (a, b) {
+                .datum(topojson.mesh(data.features, function(a, b) {
                     return a.id !== b.id;
                 }))
                 .attr("class", "names")
                 .attr("d", path);
+
+            worldmap.append("g")
+                .attr("class", "localAttacks")
+                .selectAll("circle")
+                .data(attacks)
+                .enter()
+                .append("svg:image")
+                .attr("class", function(d) {
+                    return d.year
+                })
+                .attr("xlink:href", function(d) {
+                    return "assets/" + d.typeno + ".svg";
+                })
+                .attr("width", function(d) {
+                    return 5;
+                })
+                .attr("height", function(d) {
+                    return 5;
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + projection([d.long,d.lat]) + ")";
+                });
         });
 
 
@@ -293,7 +322,7 @@
         }
 
         worldmap.selectAll("path")
-            .classed("active", centered && function (d) {
+            .classed("active", centered && function(d){
                     return d === centered;
                 });
 
