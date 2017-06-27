@@ -251,8 +251,8 @@
             .attr("data-attacktype", function(d){
                 return attackTypes.indexOf(d.key);
             })
-            .attr('fill-opacity', 0.5);
-            .attr("id", function(d, i) { return "b-" + i; })
+            .attr('fill-opacity', 0.5)
+            .attr("id", function(d, i) { return "b-" + i; });
 
         stackedArea.append("path")
             .attr("class", "area")
