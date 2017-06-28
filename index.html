@@ -59,7 +59,6 @@
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
         spinner = document.querySelector("#spinner"),
-        spinnerActive = true,
         currentYearViewer = document.querySelector("#currentyear"),
         imageButtons = document.querySelectorAll("#map_methods div img"),
         totalWidth = 1000,
@@ -86,7 +85,7 @@
     yearInput.addEventListener("input", function (event) {
         clearTimeout(inputDelay);
         inputDelay = setTimeout(function(){
-            year = parseInt(this.value);
+            year = parseInt(yearInput.value);
             updateView();
         }, 200)
     });
@@ -375,6 +374,7 @@
                     .attr("transform", function(d) {
                         return "translate(" + projection([d.long,d.lat]) + ")";
                     });
+                spinnerActive(false);
             });
     }
 
