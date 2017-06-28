@@ -49,6 +49,8 @@
     <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
 </nav>
 
+<img id="bg" src="https://source.unsplash.com/1600x900/?nature">
+
 <script>
 
     // Variable declaration
@@ -282,7 +284,7 @@
             .attr("x2", x(new Date(year, 0, 1, 5)))
             .attr("y2", y(d3.maxVal))
             .style("stroke-width", 1)
-            .style("stroke", "grey")
+            .style("stroke", "#efefef")
             .style("fill", "none");
 
 
