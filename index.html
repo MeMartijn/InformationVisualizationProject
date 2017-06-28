@@ -49,6 +49,8 @@
     <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
 </nav>
 
+<img id="bg" src="https://source.unsplash.com/1600x900/?nature">
+
 <script>
 
     // Variable declaration
@@ -251,8 +253,8 @@
                     });
                 var mouseConstant = 20.2174 //width of the area = 930 divided by 46 years = 20.2174
                 div.html("Attacks: " + "<br/>" + (d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][1]-d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][0])) // value that tooltip shows
-                    .style("left", ((d3.mouse(this)[0]) + 270) + "px") // follow the X pos of the cursor
-                    .style("top", ((d3.mouse(this)[1]) + 15) + "px");  // follow the Y pos of the cursor
+                    .style("left", ((d3.mouse(this)[0]) + 300) + "px") // follow the X pos of the cursor
+                    .style("top", ((d3.mouse(this)[1]) - 10) + "px");  // follow the Y pos of the cursor
             })
             .on("mouseout", function(d) {
                 div.style("opacity", 0);
@@ -282,7 +284,7 @@
             .attr("x2", x(new Date(year, 0, 1, 5)))
             .attr("y2", y(d3.maxVal))
             .style("stroke-width", 1)
-            .style("stroke", "grey")
+            .style("stroke", "#efefef")
             .style("fill", "none");
 
 
@@ -290,10 +292,21 @@
         svg.append("rect")
             .attr("id", "uncertain")
             .attr("x", x(new Date(1992, 0, 1, 5)))
-            .attr("y", 50)
+            .attr("y", 375)
             .attr("width", x(new Date(1994, 0, 1, 5)) - x(new Date(1992, 0, 1, 5)))
             .attr("height", height - margin.top - margin.bottom)
-            .style("fill", "rgba(255,255,255,0.3)");
+            .style("fill", "rgba(255,255,255,0.3)")
+            .on("mousemove", function(d) {
+                div.style("opacity", 0.9)
+                div.html("Missing" + "<br/>" + "data")                 // value that tooltip shows
+                    .style("left", ((d3.mouse(this)[0]) + 300) + "px") // follow the X pos of the cursor
+                    .style("top", ((d3.mouse(this)[1]) - 10) + "px")  // follow the Y pos of the cursor
+                    .style("background", "rgba(176,196,222,0.3)");
+            })
+            .on("mouseout", function(d) {
+                div.style("opacity", 0)
+                   .style("background", "rgba(176,196,222,1.0)");
+            });
 
         spinnerActive(false);
 
