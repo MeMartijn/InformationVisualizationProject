@@ -28,24 +28,24 @@
 </nav>
 
 <section>
-    <div id="graphs">
-        <div id="areachart"></div>
-        <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
-        <div id="map"></div>
-    </div>
-    <nav id="map_methods">
-      <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
-      <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
-      <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: rgb(44, 160, 44)'/></div>
-      <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: rgb(214, 39, 40)'/></div>
-      <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: rgb(148, 103, 189)'/></div>
-      <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: rgb(140, 86, 75)'/></div>
-      <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: rgb(227, 119, 194)'/></div>
-      <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
-      <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
-      <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
-    </nav>
+    <div id="areachart"></div>
+    <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
+    <div id="map"></div>
 </section>
+
+<nav id="map_methods">
+    <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
+    <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
+    <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: rgb(44, 160, 44)'/></div>
+    <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: rgb(214, 39, 40)'/></div>
+    <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: rgb(148, 103, 189)'/></div>
+    <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: rgb(140, 86, 75)'/></div>
+    <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: rgb(227, 119, 194)'/></div>
+    <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
+    <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
+    <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
+</nav>
+
 <script>
 
     // Variable declaration
@@ -55,11 +55,13 @@
         yearInput = document.querySelector("#timeslider"),
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
-        currentYear = document.querySelector("#currentyear"),
+        currentYearViewer = document.querySelector("#currentyear"),
         imageButtons = document.querySelectorAll("#map_methods div img"),
         totalWidth = 1000,
         totalHeight = 600,
         year = 1970,
+        minYear = 1970,
+        maxYear = 2015,
         running = false,
         animationTimer = null;
 
@@ -76,7 +78,7 @@
 
     // Get input values
     yearInput.addEventListener("input", function (event) {
-        year = this.value;
+        year = parseInt(this.value);
         updateView();
     });
 
@@ -87,10 +89,9 @@
         if (running) {
             this.classList.add("active");
             animationTimer = setInterval(function () {
-                year++;
-                yearInput.value = year;
+                yearInput.value = year = year + 1 > maxYear ? minYear : year + 1;
                 updateView();
-            }, 1000);
+            }, 800);
         } else {
             this.classList.remove("active");
             clearInterval(animationTimer)
@@ -101,7 +102,7 @@
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
         console.log(year);
-        currentYear.innerHTML = year;
+        currentYearViewer.innerHTML = year;
         d3
             .select("#timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
