@@ -3,6 +3,112 @@
 <head>
     <meta charset="utf-8">
     <title>Global Terrorism Database: history of attacks 💣</title>
+    <style>
+        body {
+            background: #eee;
+        }
+
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #graphs {
+            width: 1000px;
+            height: 600px;
+        }
+
+        #areachart, #map {
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        #input {
+            height: 30px;
+        }
+
+        #input input {
+            width: 100%;
+            background: transparent;
+        }
+
+        nav {
+            margin: 0 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            margin-top: 30px;
+        }
+
+        nav div {
+            text-align: center;
+            display: flex;
+            position: relative;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav img {
+            margin: 5px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 25%;
+        }
+
+        nav p {
+            display: none;
+            font-size: 10px;
+            position: absolute;
+            /*TODO: Transitioning still does not work*/
+            transition: all 0.4s ease-in-out;
+            padding: 10px;
+            opacity: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            font-family: sans-serif;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #fff;
+            z-index: -1;
+        }
+
+        nav div:hover p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            left: 98%;
+        }
+
+        .divider {
+            margin-bottom: 10px;
+            height: 1px;
+            background: #eee;
+        }
+
+        #map_controls {
+            align-self: flex-start;
+            margin-top: 620px;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 44px;
+            height: 30px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+    </style>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -251,8 +357,8 @@
                     });
                 var mouseConstant = 20.2174 //width of the area = 930 divided by 46 years = 20.2174
                 div.html("Attacks: " + "<br/>" + (d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][1]-d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][0])) // value that tooltip shows
-                    .style("left", ((d3.mouse(this)[0]) + 474) + "px") // follow the X pos of the cursor
-                    .style("top", ((d3.mouse(this)[1]) + 27) + "px");  // follow the Y pos of the cursor
+                    .style("left", ((d3.mouse(this)[0]) + 270) + "px") // follow the X pos of the cursor
+                    .style("top", ((d3.mouse(this)[1]) + 15) + "px");  // follow the Y pos of the cursor
             })
             .on("mouseout", function(d) {
                 div.style("opacity", 0);
@@ -278,9 +384,9 @@
         svg.append("svg:line")
             .attr("id", "timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
-            .attr("y1", -80)
+            .attr("y1", y(0))
             .attr("x2", x(new Date(year, 0, 1, 5)))
-            .attr("y2", height - margin.top - margin.bottom)
+            .attr("y2", y(d3.maxVal))
             .style("stroke-width", 1)
             .style("stroke", "grey")
             .style("fill", "none");
