@@ -95,6 +95,19 @@
             margin-top: 620px;
         }
 
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 44px;
+            height: 30px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
@@ -122,8 +135,6 @@
       <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
       <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
       <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
-
-      <!--opacity change script that changes opacity when user clicks a specific attacktype icon-->
 
     </nav>
 </section>
@@ -158,14 +169,14 @@
 
     // Opacity map function
     function opacityFunction(i) {
-        if (d3.select("#b-" + i).style("fill-opacity") == 0.5) {
+        if (d3.select("#b-" + i).style("fill-opacity") == 0.2) {
             d3.select("#b-" + i).transition()
                 .duration(400)
                 .style("fill-opacity", 1.0)
         } else {
             d3.select("#b-" + i).transition()
                 .duration(400)
-                .style("fill-opacity", 0.5);
+                .style("fill-opacity", 0.2);
         }
     };
 
@@ -182,6 +193,10 @@
         }
     };
 
+    // Tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
     // Area chart variables
     var margin = {
@@ -265,7 +280,20 @@
                 return attackTypes.indexOf(d.key);
             })
             .attr('fill-opacity', 1.0)
-            .attr("id", function(d, i) { return "b-" + i; });
+            .attr("id", function(d, i) { return "b-" + i; })
+            .on("mousemove", function(d) {
+                div.style("opacity", function() {
+                        if (d3.select("#b-" + (attackTypes.indexOf(d.key))).style("fill-opacity") == 1.0) {return 0.9} //only show tooltip
+                        else {return 0}                                                                          //if area has opacity 1.0
+                    });
+                var mouseConstant = 20.2174 //width of the area = 930 divided by 46 years = 20.2174
+                div.html("Attacks: " + "<br/>" + (d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][1]-d[(Math.round((d3.mouse(this)[0]) / mouseConstant))][0])) // value that tooltip shows
+                    .style("left", ((d3.mouse(this)[0]) + 474) + "px") // follow the X pos of the cursor
+                    .style("top", ((d3.mouse(this)[1]) + 27) + "px");  // follow the Y pos of the cursor
+            })
+            .on("mouseout", function(d) {
+                div.style("opacity", 0);
+            });
 
         stackedArea.append("path")
             .attr("class", "area")
@@ -281,6 +309,8 @@
         svg.append("g")
             .call(yAxis);
     });
+
+
 
     // Map variables
     var worldmap = d3.select("#map")
