@@ -38,9 +38,10 @@ g.countries path {
 }
 
 .attackicon {
-    border-radius: 50%;
-
+    cursor: pointer;
+    z-index: 99;
 }
+
 
 /* === Styling for the surrounding nav blocks === */
 nav {
@@ -75,7 +76,7 @@ div.tooltip {
     padding: 2px;
     font: 12px sans-serif;
     background: lightsteelblue;
-    border: 0px;
+    border: 0;
     border-radius: 8px;
     pointer-events: none;
 }
@@ -87,7 +88,7 @@ nav div p {
     transition: all 0.4s ease-in-out;
     padding: 10px;
     opacity: 0;
-    right: 0%;
+    right: 0;
     top: 0;
     bottom: 0;
     font-family: sans-serif;
@@ -110,11 +111,19 @@ nav#infocontainer {
     padding: 10px;
     left: 10px;
     top: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 nav#infocontainer div{
     padding:10px 0;
     border-top: 1px solid #eee;
+}
+
+#infocontainer span {
+    display: block;
+    font-size: 15px;
+    margin: 8px 0;
 }
 
 nav h3 {
@@ -168,7 +177,7 @@ div.tooltip {
     padding: 2px;
     font: 12px sans-serif;
     background: lightsteelblue;
-    border: 0px;
+    border: 0;
     border-radius: 8px;
     pointer-events: none;
 }

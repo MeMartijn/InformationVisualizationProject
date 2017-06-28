@@ -23,7 +23,9 @@
     </div>
     <div style="display:block;">
         More Information:<br>
-        <i>empty</i>
+        <span id="group"><i style="color: grey; font-size: 12px;">Click on an attack to see more information.</i></span>
+        <span id="kills"></span>
+        <span id="summary"></span>
     </div>
     <div>
         <img src="assets/spin.gif" id="spinner">
@@ -49,7 +51,6 @@
     <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
 </nav>
 
-<img id="bg" src="https://source.unsplash.com/1600x900/?nature">
 
 <script>
 
@@ -63,6 +64,9 @@
         spinner = document.querySelector("#spinner"),
         currentYearViewer = document.querySelector("#currentyear"),
         imageButtons = document.querySelectorAll("#map_methods div img"),
+        groupDisplay = document.querySelector("#group"),
+        killDisplay = document.querySelector("#kills"),
+        summaryDisplay = document.querySelector("#summary"),
         totalWidth = 1000,
         totalHeight = 600,
         year = 1970,
@@ -406,9 +410,17 @@
                     })
                     .attr("transform", function(d) {
                         return "translate(" + projection([d.long,d.lat]) + ")";
-                    });
+                    })
+                    .on("click", showTooltip);
                 spinnerActive(false);
             });
+    }
+
+    // Tooltip function
+    function showTooltip(d) {
+        groupDisplay.innerHTML = "<b>Conducted by: </b>" + d.group;
+        summaryDisplay.innerHTML = d.sum;
+        killDisplay.innerHTML = "<b>Total kills: </b>" + d.kills;
     }
 
 
@@ -418,7 +430,7 @@
         var x, y, k;
         if (d && centered !== d) {
             var centroid = path.centroid(d);
-            x = centroid [0];
+            x = centroid[0];
             y = centroid[1];
             k = 4;
             centered = d;
