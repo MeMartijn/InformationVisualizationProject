@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Global Terrorism Database: history of attacks 💣</title>
+<<<<<<< HEAD
     <style>
         body {
             background: #eee;
@@ -109,21 +110,27 @@
         }
 
     </style>
+=======
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
+>>>>>>> 67878228a7bcadbd7b0839d5946276991ab4ecac
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
 </head>
 <body>
 
-<section id="worldmap">
-    <nav id="map_controls">
-        <div><img src="assets/play.svg" id="playbutton"/></div>
-    </nav>
-    <div id="graphs">
-        <div id="areachart"></div>
-        <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
-        <div id="map"></div>
+<nav id="infocontainer">
+    <h3>Global terrorist attacks by type per year</h3>
+    <div id="playbutton">
+        <img id="play" src="assets/play.svg"/>
+        <img id="stop" src="assets/stop.svg"/>
     </div>
+    <div id="moreinformation">
+        Current year:
+        <h3 id="currentyear">1970</h3>
+    </div>
+<<<<<<< HEAD
     <nav id="map_methods">
       <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
       <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
@@ -137,17 +144,56 @@
       <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
 
     </nav>
+=======
+    <div style="display:block;">
+        More Information:<br>
+        <i>empty</i>
+    </div>
+    <div>
+        <img src="assets/spin.gif" id="spinner">
+    </div>
+</nav>
+
+<section>
+    <div id="areachart"></div>
+    <div id="input"><input type="range" id="timeslider" name="year" min="1970" max="2015" value="1970"></div>
+    <div id="map"></div>
+>>>>>>> 67878228a7bcadbd7b0839d5946276991ab4ecac
 </section>
+
+<nav id="map_methods">
+    <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
+    <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
+    <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: rgb(44, 160, 44)'/></div>
+    <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: rgb(214, 39, 40)'/></div>
+    <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: rgb(148, 103, 189)'/></div>
+    <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: rgb(140, 86, 75)'/></div>
+    <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: rgb(227, 119, 194)'/></div>
+    <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
+    <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
+    <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
+</nav>
+
 <script>
 
     // Variable declaration
-    var dataset = "dataset/globalterrorismdb.csv";
-    var attacksDataset = "dataset/attacktypes.csv";
-    var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
-    var yearInput = document.querySelector("#input input");
-    var countries = document.querySelectorAll(".datamaps-subunits path");
-    var playbutton = document.querySelector("#playbutton");
-    var imageButtons = document.querySelectorAll("#map_methods div img");
+    var attacksDataset = "dataset/attacktypes.csv",
+        countriesDataset = "dataset/world_countries.json",
+        attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
+        yearInput = document.querySelector("#timeslider"),
+        countries = document.querySelectorAll(".datamaps-subunits path"),
+        playButton = document.querySelector("#playbutton"),
+        spinner = document.querySelector("#spinner"),
+        currentYearViewer = document.querySelector("#currentyear"),
+        imageButtons = document.querySelectorAll("#map_methods div img"),
+        totalWidth = 1000,
+        totalHeight = 600,
+        year = 1970,
+        minYear = 1970,
+        maxYear = 2015,
+        running = false,
+        animationTimer = null,
+        inputDelay = null;
 
 
     // Add names to image labels
@@ -160,12 +206,44 @@
     });
 
 
-    // Timing function
-    var running = false;
-    playbutton.addEventListener("click", function (event) {
-        console.log(this.src);
+    // Get input values
+    yearInput.addEventListener("input", function (event) {
+        clearTimeout(inputDelay);
+        inputDelay = setTimeout(function(){
+            year = parseInt(yearInput.value);
+            updateView();
+        }, 200)
     });
 
+    // Timing function
+    playButton.addEventListener("click", function (event) {
+
+        running = !running;
+        if (running) {
+            this.classList.add("active");
+            animationTimer = setInterval(function () {
+                yearInput.value = year = year + 1 > maxYear ? minYear : year + 1;
+                updateView();
+            }, 800);
+        } else {
+            this.classList.remove("active");
+            clearInterval(animationTimer)
+        }
+
+    });
+
+    // The actual handler for applying changes. Use the global year variable.
+    function updateView() {
+        console.log(year);
+        spinnerActive(true);
+        currentYearViewer.innerHTML = year;
+        d3
+            .select("#timeline")
+            .attr("x1", x(new Date(year, 0, 1, 5)))
+            .attr("x2", x(new Date(year, 0, 1, 5)))
+
+        loadGraphics(year);
+    }
 
     // Opacity map function
     function opacityFunction(i) {
@@ -180,9 +258,17 @@
         }
     };
 
+    function spinnerActive(active){
+        if(active){
+            spinner.style.visibility = "visible"
+        }else{
+            spinner.style.visibility = "hidden";
+        }
+    }
+
 
     // Change the icon backgroundcolor to match the color of the areachart color if active
-    function backgroundActive(i){
+    function backgroundActive(i) {
         var id = document.getElementById('attacktype' + i);
         if (id.style.backgroundColor !== "white") {
             id.style.backgroundColor = "white";
@@ -191,7 +277,7 @@
             id.style.backgroundColor = color(attackTypes[i]);
             id.style.transition = "all 1s";
         }
-    };
+    }
 
     // Tooltip
     var div = d3.select("body").append("div")
@@ -205,12 +291,13 @@
         bottom: 30,
         left: 50
     };
-    var width = 1000 - margin.left - margin.right;
-    var height = 600 - margin.top - margin.bottom;
+    var width = totalWidth - margin.left - margin.right;
+    var height = totalHeight - margin.top - margin.bottom;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     var parseDate = d3.timeParse('%Y');
     var x = d3.scaleTime()
         .range([0, width]);
+    yearInput.style.width = width + "px";
     var y = d3.scaleLinear()
         .range([height, 0]);
     var xAxis = d3.axisBottom()
@@ -218,13 +305,13 @@
     var yAxis = d3.axisLeft()
         .scale(y);
     var area = d3.area()
-        .x(function(d) {
+        .x(function (d) {
             return x(d.data.Year);
         })
-        .y0(function(d) {
+        .y0(function (d) {
             return y(d[0]);
         })
-        .y1(function(d) {
+        .y1(function (d) {
             return y(d[1]);
         });
     var stack = d3.stack();
@@ -237,6 +324,7 @@
 
     // Generate stacked area chart
     d3.csv(attacksDataset, function(error, data) {
+
         if (error) throw error;
         color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== 'Year'
@@ -302,32 +390,61 @@
                 return color(d.key);
             });
 
+        // Add X-Axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
+        // Add Y-Axis
         svg.append("g")
             .call(yAxis);
+
+        // Append the indicator line that will be modified by the time loop
+        svg.append("svg:line")
+            .attr("id", "timeline")
+            .attr("x1", x(new Date(year, 0, 1, 5)))
+            .attr("y1", -80)
+            .attr("x2", x(new Date(year, 0, 1, 5)))
+            .attr("y2", height - margin.top - margin.bottom)
+            .style("stroke-width", 1)
+            .style("stroke", "grey")
+            .style("fill", "none");
+
+
+        // Append the uncertainty line
+        svg.append("rect")
+            .attr("id", "uncertain")
+            .attr("x", x(new Date(1992, 0, 1, 5)))
+            .attr("y", 50)
+            .attr("width", x(new Date(1994, 0, 1, 5)) - x(new Date(1992, 0, 1, 5)))
+            .attr("height", height - margin.top - margin.bottom)
+            .style("fill", "rgba(255,255,255,0.3)");
+
+        spinnerActive(false);
+
     });
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 67878228a7bcadbd7b0839d5946276991ab4ecac
     // Map variables
     var worldmap = d3.select("#map")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", totalWidth)
+        .attr("height", totalHeight)
         .append("g")
         .attr("class", "map");
     var projection = d3.geoMercator()
         .scale(130)
-        .translate([width/2, height/1.5]);
+        .translate([totalWidth/2, totalHeight/1.5]);
     var path = d3.geoPath().projection(projection);
 
 
     // Generate map
     queue()
-        .defer(d3.json, "dataset/world_countries.json")
+        .defer(d3.json, countriesDataset)
         .await(function(error, data){
             if (error) throw error;
 
@@ -353,6 +470,59 @@
                 .attr("class", "names")
                 .attr("d", path);
         });
+
+
+    // Data loading function
+    function loadGraphics(currentYear) {
+        var yearCsv = "dataset/years/" + currentYear.toString() + ".csv";
+
+        // Delete all earlier graphics
+        worldmap.selectAll("g.localAttacks").remove();
+
+        // Load the new dataset
+        queue()
+            .defer(d3.csv, yearCsv)
+            .await(function(error, attacks){
+                if (error) throw error;
+
+                attacks.forEach(function(d) {
+                    d.year   =  +d["iyear"];
+                    d.type = attackTypes[+d["attacktype1"]];
+                    d.typeno = +d["attacktype1"];
+                    d.long  = +d["longitude"];
+                    d.lat  = +d["latitude"];
+                    d.sum  = d["summary"];
+                    d.crit1 = +d["crit1"];
+                    d.crit2 = +d["crit2"];
+                    d.crit3 = +d["crit3"];
+                    d.group = d["gname"];
+                    d.kills = +d["nkill"];
+                });
+
+                worldmap.append("g")
+                    .attr("class", "localAttacks")
+                    .selectAll("circle")
+                    .data(attacks)
+                    .enter()
+                    .append("svg:image")
+                    .attr("class", function(d) {
+                        return d.typeno;
+                    })
+                    .attr("xlink:href", function(d) {
+                        return "assets/" + d.typeno + ".svg";
+                    })
+                    .attr("width", function(d) {
+                        return 5;
+                    })
+                    .attr("height", function(d) {
+                        return 5;
+                    })
+                    .attr("transform", function(d) {
+                        return "translate(" + projection([d.long,d.lat]) + ")";
+                    });
+                spinnerActive(false);
+            });
+    }
 
 
     // Zoom map function
@@ -381,11 +551,6 @@
             .duration(500)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
     }
-
-    // Get input values
-    yearInput.addEventListener("input", function (event) {
-        console.log(this.value);
-    });
 
 </script>
 </body>
