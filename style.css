@@ -2,6 +2,7 @@
 body {
     background: #eee;
     margin: 0;
+    font-family: 'Droid Serif', serif;
     padding: 10px 10px 30px 10px;
 }
 
@@ -43,7 +44,6 @@ nav {
 }
 
 nav div {
-    text-align: center;
     display: flex;
     position: relative;
     justify-content: space-between;
@@ -63,11 +63,10 @@ nav div p {
     display: none;
     font-size: 10px;
     position: absolute;
-    /*TODO: Transitioning still does not work*/
     transition: all 0.4s ease-in-out;
     padding: 10px;
     opacity: 0;
-    right: 0;
+    right: 0%;
     top: 0;
     bottom: 0;
     font-family: sans-serif;
@@ -77,6 +76,7 @@ nav div p {
 }
 
 nav div:hover p {
+    transition: all 0.4s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,13 +91,17 @@ nav#infocontainer {
     top: 10px;
 }
 
+nav#infocontainer div{
+    padding:10px 0;
+    border-top: 1px solid #eee;
+}
+
 h3 {
     margin: 0;
 }
 
 #playbutton {
     cursor: pointer;
-    border-top: 1px solid #eee;
     display: flex;
     justify-content: center;
     transition: all 0.4s ease-in-out;

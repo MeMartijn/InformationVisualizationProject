@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Global Terrorism Database: history of attacks 💣</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -15,6 +16,14 @@
     <div id="playbutton">
         <img id="play" src="assets/play.svg"/>
         <img id="stop" src="assets/stop.svg"/>
+    </div>
+    <div id="moreinformation">
+        Current year:
+        <h3 id="currentyear">1970</h3>
+    </div>
+    <div style="display:block;">
+        More Information:<br>
+        <i>empty</i>
     </div>
 </nav>
 
@@ -40,18 +49,20 @@
 <script>
 
     // Variable declaration
-    var dataset = "dataset/condensed.csv-removekebab";
-    var attacksDataset = "dataset/attacktypes.csv";
-    var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
-    var yearInput = document.querySelector("#timeslider");
-    var countries = document.querySelectorAll(".datamaps-subunits path");
-    var playbutton = document.querySelector("#playbutton");
-    var imageButtons = document.querySelectorAll("#map_methods div img");
-    var totalWidth = 1000;
-    var totalHeight = 600;
-    var year = 1970;
-    var running = false;
-    var animationTimer = null;
+    var dataset = "dataset/condensed.csv-removekebab",
+        attacksDataset = "dataset/attacktypes.csv",
+        countriesDataset = "dataset/world_countries.json",
+        attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
+        yearInput = document.querySelector("#timeslider"),
+        countries = document.querySelectorAll(".datamaps-subunits path"),
+        playButton = document.querySelector("#playbutton"),
+        currentYear = document.querySelector("#currentyear"),
+        imageButtons = document.querySelectorAll("#map_methods div img"),
+        totalWidth = 1000,
+        totalHeight = 600,
+        year = 1970,
+        running = false,
+        animationTimer = null;
 
 
     // Add names to image labels
@@ -71,7 +82,7 @@
     });
 
     // Timing function
-    playbutton.addEventListener("click", function (event) {
+    playButton.addEventListener("click", function (event) {
 
         running = !running;
         if (running) {
@@ -91,6 +102,7 @@
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
         console.log(year);
+        currentYear.innerHTML = year;
         d3
             .select("#timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
@@ -230,12 +242,22 @@
         svg.append("svg:line")
             .attr("id", "timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
-            .attr("y1", -100)
+            .attr("y1", -80)
             .attr("x2", x(new Date(year, 0, 1, 5)))
             .attr("y2", height - margin.top - margin.bottom)
             .style("stroke-width", 1)
             .style("stroke", "grey")
             .style("fill", "none");
+
+
+        // Append the uncertainty line
+        svg.append("rect")
+            .attr("id", "uncertain")
+            .attr("x", x(new Date(1992, 0, 1, 5)))
+            .attr("y", 50)
+            .attr("width", x(new Date(1994, 0, 1, 5)) - x(new Date(1992, 0, 1, 5)))
+            .attr("height", height - margin.top - margin.bottom)
+            .style("fill", "rgba(255,255,255,0.3)");
 
     });
 
@@ -255,7 +277,7 @@
 
     // Generate map
     queue()
-        .defer(d3.json, "dataset/world_countries.json")
+        .defer(d3.json, countriesDataset)
         .defer(d3.csv, dataset)
         .await(function(error, data, attacks){
             if (error) throw error;
