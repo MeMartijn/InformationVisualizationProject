@@ -60,7 +60,7 @@
         imageButtons = document.querySelectorAll("#map_methods div img"),
         totalWidth = 1000,
         totalHeight = 600,
-        currentYear = 1970,
+        year = 1970,
         minYear = 1970,
         maxYear = 2015,
         running = false,
@@ -79,7 +79,7 @@
 
     // Get input values
     yearInput.addEventListener("input", function (event) {
-        currentYear = parseInt(this.value);
+        year = parseInt(this.value);
         updateView();
     });
 
@@ -90,7 +90,7 @@
         if (running) {
             this.classList.add("active");
             animationTimer = setInterval(function () {
-                yearInput.value = currentYear = currentYear + 1 > maxYear ? minYear : currentYear + 1;
+                yearInput.value = year = year + 1 > maxYear ? minYear : year + 1;
                 updateView();
             }, 800);
         } else {
@@ -102,12 +102,12 @@
 
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
-        console.log(currentYear);
-        currentYearViewer.innerHTML = currentYear;
+        console.log(year);
+        currentYearViewer.innerHTML = year;
         d3
             .select("#timeline")
-            .attr("x1", x(new Date(currentYear, 0, 1, 5)))
-            .attr("x2", x(new Date(currentYear, 0, 1, 5)))
+            .attr("x1", x(new Date(year, 0, 1, 5)))
+            .attr("x2", x(new Date(year, 0, 1, 5)))
     }
 
     // Opacity map function
@@ -242,9 +242,9 @@
         // Append the indicator line that will be modified by the time loop
         svg.append("svg:line")
             .attr("id", "timeline")
-            .attr("x1", x(new Date(currentYear, 0, 1, 5)))
+            .attr("x1", x(new Date(year, 0, 1, 5)))
             .attr("y1", -80)
-            .attr("x2", x(new Date(currentYear, 0, 1, 5)))
+            .attr("x2", x(new Date(year, 0, 1, 5)))
             .attr("y2", height - margin.top - margin.bottom)
             .style("stroke-width", 1)
             .style("stroke", "grey")
