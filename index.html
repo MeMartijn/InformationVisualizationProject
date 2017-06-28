@@ -49,8 +49,7 @@
 <script>
 
     // Variable declaration
-    var dataset = "dataset/condensed.csv-removekebab",
-        attacksDataset = "dataset/attacktypes.csv",
+    var attacksDataset = "dataset/attacktypes.csv",
         countriesDataset = "dataset/world_countries.json",
         attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
         yearInput = document.querySelector("#timeslider"),
@@ -107,6 +106,8 @@
             .select("#timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
             .attr("x2", x(new Date(year, 0, 1, 5)))
+
+        loadGraphics(year);
     }
 
     // Opacity map function
@@ -133,7 +134,7 @@
             id.style.backgroundColor = color(attackTypes[i]);
             id.style.transition = "all 1s";
         }
-    };
+    }
 
 
     // Area chart variables
@@ -278,23 +279,8 @@
     // Generate map
     queue()
         .defer(d3.json, countriesDataset)
-        .defer(d3.csv, dataset)
-        .await(function(error, data, attacks){
+        .await(function(error, data){
             if (error) throw error;
-
-            attacks.forEach(function(d) {
-                d.year   =  +d["iyear"];
-                d.type = attackTypes[+d["attacktype1"]];
-                d.typeno = +d["attacktype1"];
-                d.long  = +d["longitude"];
-                d.lat  = +d["latitude"];
-                d.sum  = d["summary"];
-                d.crit1 = +d["crit1"];
-                d.crit2 = +d["crit2"];
-                d.crit3 = +d["crit3"];
-                d.group = d["gname"];
-                d.kills = +d["nkill"];
-            });
 
             worldmap.append("g")
                 .attr("class", "countries")
@@ -317,29 +303,59 @@
                 }))
                 .attr("class", "names")
                 .attr("d", path);
-
-            worldmap.append("g")
-                .attr("class", "localAttacks")
-                .selectAll("circle")
-                .data(attacks)
-                .enter()
-                .append("svg:image")
-                .attr("class", function(d) {
-                    return d.year
-                })
-                .attr("xlink:href", function(d) {
-                    return "assets/" + d.typeno + ".svg";
-                })
-                .attr("width", function(d) {
-                    return 5;
-                })
-                .attr("height", function(d) {
-                    return 5;
-                })
-                .attr("transform", function(d) {
-                    return "translate(" + projection([d.long,d.lat]) + ")";
-                });
         });
+
+
+    // Data loading function
+    function loadGraphics(currentYear) {
+        var yearCsv = "dataset/years/" + currentYear.toString() + ".csv";
+
+        // Delete all earlier graphics
+        worldmap.selectAll("g.localAttacks").remove();
+
+        // Load the new dataset
+        queue()
+            .defer(d3.csv, yearCsv)
+            .await(function(error, attacks){
+                if (error) throw error;
+
+                attacks.forEach(function(d) {
+                    d.year   =  +d["iyear"];
+                    d.type = attackTypes[+d["attacktype1"]];
+                    d.typeno = +d["attacktype1"];
+                    d.long  = +d["longitude"];
+                    d.lat  = +d["latitude"];
+                    d.sum  = d["summary"];
+                    d.crit1 = +d["crit1"];
+                    d.crit2 = +d["crit2"];
+                    d.crit3 = +d["crit3"];
+                    d.group = d["gname"];
+                    d.kills = +d["nkill"];
+                });
+
+                worldmap.append("g")
+                    .attr("class", "localAttacks")
+                    .selectAll("circle")
+                    .data(attacks)
+                    .enter()
+                    .append("svg:image")
+                    .attr("class", function(d) {
+                        return d.typeno;
+                    })
+                    .attr("xlink:href", function(d) {
+                        return "assets/" + d.typeno + ".svg";
+                    })
+                    .attr("width", function(d) {
+                        return 5;
+                    })
+                    .attr("height", function(d) {
+                        return 5;
+                    })
+                    .attr("transform", function(d) {
+                        return "translate(" + projection([d.long,d.lat]) + ")";
+                    });
+            });
+    }
 
 
     // Zoom map function
