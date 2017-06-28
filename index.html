@@ -3,112 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>Global Terrorism Database: history of attacks 💣</title>
-    <style>
-        body {
-            background: #eee;
-        }
-
-        section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #graphs {
-            width: 1000px;
-            height: 600px;
-        }
-
-        #areachart, #map {
-            background: #fff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-        }
-
-        #input {
-            height: 30px;
-        }
-
-        #input input {
-            width: 100%;
-            background: transparent;
-        }
-
-        nav {
-            margin: 0 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            margin-top: 30px;
-        }
-
-        nav div {
-            text-align: center;
-            display: flex;
-            position: relative;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav img {
-            margin: 5px;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 25%;
-        }
-
-        nav p {
-            display: none;
-            font-size: 10px;
-            position: absolute;
-            /*TODO: Transitioning still does not work*/
-            transition: all 0.4s ease-in-out;
-            padding: 10px;
-            opacity: 0;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            font-family: sans-serif;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            background: #fff;
-            z-index: -1;
-        }
-
-        nav div:hover p {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-            left: 98%;
-        }
-
-        .divider {
-            margin-bottom: 10px;
-            height: 1px;
-            background: #eee;
-        }
-
-        #map_controls {
-            align-self: flex-start;
-            margin-top: 620px;
-        }
-
-        div.tooltip {
-            position: absolute;
-            text-align: center;
-            width: 44px;
-            height: 30px;
-            padding: 2px;
-            font: 12px sans-serif;
-            background: lightsteelblue;
-            border: 0px;
-            border-radius: 8px;
-            pointer-events: none;
-        }
-
-    </style>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -191,7 +85,7 @@
     yearInput.addEventListener("input", function (event) {
         clearTimeout(inputDelay);
         inputDelay = setTimeout(function(){
-            year = parseInt(yearInput.value);
+            yearInput.value = year = parseInt(yearInput.value) === 1993 ? 1994 : parseInt(yearInput.value);
             updateView();
         }, 200)
     });
@@ -203,7 +97,7 @@
         if (running) {
             this.classList.add("active");
             animationTimer = setInterval(function () {
-                yearInput.value = year = year + 1 > maxYear ? minYear : year + 1;
+                yearInput.value = year = (year + 1 > maxYear && year !== 1993) ? minYear : year + 1;
                 updateView();
             }, 800);
         } else {
