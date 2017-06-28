@@ -310,6 +310,9 @@
         .scale(130)
         .translate([totalWidth/2, totalHeight/1.5]);
     var path = d3.geoPath().projection(projection);
+    var killScale = d3.scaleLinear()
+        .domain([0,1500])    // 1500 is the maximum kills per attack, counted in Python whilst generating the datasets
+        .range([0,200]);
 
 
     // Generate map
@@ -369,6 +372,7 @@
                     d.kills = +d["nkill"];
                 });
 
+                var calcDimension;
                 worldmap.append("g")
                     .attr("class", "localAttacks")
                     .selectAll("circle")
@@ -376,16 +380,16 @@
                     .enter()
                     .append("svg:image")
                     .attr("class", function(d) {
-                        return d.typeno;
+                        return d.typeno + " attackicon";
                     })
                     .attr("xlink:href", function(d) {
                         return "assets/" + d.typeno + ".svg";
                     })
                     .attr("width", function(d) {
-                        return 5;
+                        return 5 + killScale(d.kills);
                     })
                     .attr("height", function(d) {
-                        return 5;
+                        return 5 + killScale(d.kills);
                     })
                     .attr("transform", function(d) {
                         return "translate(" + projection([d.long,d.lat]) + ")";
@@ -421,6 +425,8 @@
             .duration(500)
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
     }
+
+    loadGraphics(year); // Load 1970 on refresh
 
 </script>
 </body>
