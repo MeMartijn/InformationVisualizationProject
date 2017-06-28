@@ -25,6 +25,9 @@
         More Information:<br>
         <i>empty</i>
     </div>
+    <div>
+        <img src="assets/spin.gif" id="spinner">
+    </div>
 </nav>
 
 <section>
@@ -55,6 +58,8 @@
         yearInput = document.querySelector("#timeslider"),
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
+        spinner = document.querySelector("#spinner"),
+        spinnerActive = true,
         currentYearViewer = document.querySelector("#currentyear"),
         imageButtons = document.querySelectorAll("#map_methods div img"),
         totalWidth = 1000,
@@ -63,7 +68,8 @@
         minYear = 1970,
         maxYear = 2015,
         running = false,
-        animationTimer = null;
+        animationTimer = null,
+        inputDelay = null;
 
 
     // Add names to image labels
@@ -78,8 +84,11 @@
 
     // Get input values
     yearInput.addEventListener("input", function (event) {
-        year = parseInt(this.value);
-        updateView();
+        clearTimeout(inputDelay);
+        inputDelay = setTimeout(function(){
+            year = parseInt(this.value);
+            updateView();
+        }, 200)
     });
 
     // Timing function
@@ -102,6 +111,7 @@
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
         console.log(year);
+        spinnerActive(true);
         currentYearViewer.innerHTML = year;
         d3
             .select("#timeline")
@@ -123,6 +133,14 @@
                 .style("fill-opacity", 0.5);
         }
     };
+
+    function spinnerActive(active){
+        if(active){
+            spinner.style.visibility = "visible"
+        }else{
+            spinner.style.visibility = "hidden";
+        }
+    }
 
 
     // Change the icon backgroundcolor to match the color of the areachart color if active
@@ -260,6 +278,8 @@
             .attr("width", x(new Date(1994, 0, 1, 5)) - x(new Date(1992, 0, 1, 5)))
             .attr("height", height - margin.top - margin.bottom)
             .style("fill", "rgba(255,255,255,0.3)");
+
+        spinnerActive(false);
 
     });
 

@@ -99,7 +99,7 @@ nav#infocontainer div{
     border-top: 1px solid #eee;
 }
 
-h3 {
+nav h3 {
     margin: 0;
 }
 
@@ -130,6 +130,11 @@ h3 {
 
 #playbutton.active #stop {
     display: block;
+}
+
+nav #spinner{
+    display:block;
+    margin: 0 auto;
 }
 
 #map_methods {
