@@ -35,15 +35,12 @@
       <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
       <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
       <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
-
-      <!--opacity change script that changes opacity when user clicks a specific attacktype icon-->
-
     </nav>
 </section>
 <script>
 
     // Variable declaration
-    var dataset = "dataset/condensed.csv";
+    var dataset = "dataset/condensed.csv-removekebab";
     var attacksDataset = "dataset/attacktypes.csv";
     var attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
     var yearInput = document.querySelector("#timeslider");
@@ -94,6 +91,10 @@
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
         console.log(year);
+        d3
+            .select("#timeline")
+            .attr("x1", x(new Date(year, 0, 1, 5)))
+            .attr("x2", x(new Date(year, 0, 1, 5)))
     }
 
     // Opacity map function
@@ -163,6 +164,7 @@
 
     // Generate stacked area chart
     d3.csv(attacksDataset, function(error, data) {
+
         if (error) throw error;
         color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== 'Year'
@@ -215,12 +217,26 @@
                 return color(d.key);
             });
 
+        // Add X-Axis
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
+        // Add Y-Axis
         svg.append("g")
             .call(yAxis);
+
+        // Append the indicator line that will be modified by the time loop
+        svg.append("svg:line")
+            .attr("id", "timeline")
+            .attr("x1", x(new Date(year, 0, 1, 5)))
+            .attr("y1", -100)
+            .attr("x2", x(new Date(year, 0, 1, 5)))
+            .attr("y2", height - margin.top - margin.bottom)
+            .style("stroke-width", 1)
+            .style("stroke", "grey")
+            .style("fill", "none");
+
     });
 
 
