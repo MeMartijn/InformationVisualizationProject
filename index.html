@@ -19,7 +19,7 @@
     </div>
     <div id="moreinformation">
         Current year:
-        <h3 id="currentyear">1970</h3>
+        <input id="currentyear" type="number" min="1970" max="2015" value="1970">
     </div>
     <div style="display:block;">
         More Information:<br>
@@ -88,6 +88,20 @@
 
 
     // Get input values
+    var inputValueChanger = function (event) {
+        var block = this;
+        clearTimeout(inputDelay);
+        inputDelay = setTimeout(function(){
+            year = parseInt(block.value) === 1993 ? 1994 : parseInt(block.value);
+            currentYearViewer.input = yearInput.value = year;
+            updateView();
+        }, 200)
+    };
+    currentYearViewer.addEventListener("input", inputValueChanger);
+    yearInput.addEventListener("input", inputValueChanger);
+
+
+    // Get input values
     yearInput.addEventListener("input", function (event) {
         clearTimeout(inputDelay);
         inputDelay = setTimeout(function(){
@@ -117,7 +131,7 @@
     function updateView() {
         console.log(year);
         spinnerActive(true);
-        currentYearViewer.innerHTML = year;
+        currentYearViewer.value = year;
         d3
             .select("#timeline")
             .attr("x1", x(new Date(year, 0, 1, 5)))
