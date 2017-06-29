@@ -25,6 +25,7 @@
         More Information:<br>
         <span id="group"><i style="color: grey; font-size: 12px;">Click on an attack to see more information.</i></span>
         <span id="kills"></span>
+        <span id="motive"></span>
         <span id="summary"></span>
     </div>
     <div>
@@ -59,6 +60,7 @@
         countriesDataset = "dataset/world_countries.json",
         attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
         colorPalette = ["rgb(31, 119, 180)", "rgb(255, 127, 14)", "rgb(44, 160, 44)", "rgb(214, 39, 40)", "rgb(148, 103, 189)", "rgb(140, 86, 75)", "rgb(227, 119, 194)", "rgb(127, 127, 127)", "rgb(188, 189, 34)", "rgb(23, 190, 207)"],
+        criteria = [],
         yearInput = document.querySelector("#timeslider"),
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
@@ -68,6 +70,7 @@
         groupDisplay = document.querySelector("#group"),
         killDisplay = document.querySelector("#kills"),
         summaryDisplay = document.querySelector("#summary"),
+        motiveDisplay = document.querySelector("#motive")
         totalWidth = 1000,
         totalHeight = 600,
         year = 1970,
@@ -391,6 +394,7 @@
                     d.sum  = d["summary"];
                     d.group = d["gname"];
                     d.kills = +d["nkill"];
+                    d.motive = [+d["crit1"], +d["crit2"], +d["crit3"]];
                 });
 
                 var calcDimension;
@@ -427,6 +431,10 @@
         groupDisplay.innerHTML = "<b>Conducted by: </b>" + d.group;
         summaryDisplay.innerHTML = d.sum;
         killDisplay.innerHTML = "<b>Total kills: </b>" + d.kills;
+        var motive = d.motive.reduce(function(a, b) {
+            return Math.max(a, b);
+        });
+        motiveDisplay.innerHTML = criteria[motive.indexOf(d.motive)];
     }
 
 
