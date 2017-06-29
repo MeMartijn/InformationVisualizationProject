@@ -60,7 +60,7 @@
         countriesDataset = "dataset/world_countries.json",
         attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
         colorPalette = ["rgb(31, 119, 180)", "rgb(255, 127, 14)", "rgb(44, 160, 44)", "rgb(214, 39, 40)", "rgb(148, 103, 189)", "rgb(140, 86, 75)", "rgb(227, 119, 194)", "rgb(127, 127, 127)", "rgb(188, 189, 34)", "rgb(23, 190, 207)"],
-        criteria = [],
+        criteria = [" aimed at attaining a political, economic, religious or social goal", " aimed at intimidating or conveying some other message to a larger audience than the immediate victims", " targeted people that were not involved in the initial conflict"],
         yearInput = document.querySelector("#timeslider"),
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
@@ -171,12 +171,13 @@
 
     // Change displayed circles on map
     function attacksFilter(i) {
+        var id = document.getElementById('attacktype' + i);
         if (id.style.backgroundColor !== "white") {
-            d3.selectAll("circle[data-attacktype=" + i + "]")
-                .attr("fill-opacity", 0);
-        } else {
-            d3.selectAll("circle[data-attacktype=" + i + "]")
+            d3.selectAll(".attackicon[data-attacktype='" + i + "']")
                 .attr("fill-opacity", 1.0);
+        } else {
+            d3.selectAll(".attackicon[data-attacktype='" + i + "']")
+                .attr("fill-opacity", 0);
         }
     }
 
@@ -421,7 +422,7 @@
                         return d.typeno;
                     })
                     .attr("fill", function(d) {
-                        return colorPalette[n.typeno];
+                        return colorPalette[d.typeno];
                     })
                     .attr("cx", function(d) {
                         return projection([d.long,d.lat])[0];
@@ -443,10 +444,21 @@
         groupDisplay.innerHTML = "<b>Conducted by: </b>" + d.group;
         summaryDisplay.innerHTML = d.sum;
         killDisplay.innerHTML = "<b>Total kills: </b>" + d.kills;
-        var motive = d.motive.reduce(function(a, b) {
-            return Math.max(a, b);
+        var motive = [];
+        var critIndex = 0;
+        d.motive.forEach(function(crit){
+            if (crit > 0) {
+                motive.push(criteria[critIndex]);
+            }
+            critIndex += 1;
         });
-        motiveDisplay.innerHTML = criteria[motive.indexOf(d.motive)];
+        if (motive.length === 1) {
+            motiveDisplay.innerHTML = "This attack was" + motive[0] + ".";
+        } else if (motive.length === 2) {
+            motiveDisplay.innerHTML = "This attack was" + motive[0] + " and" + motive[1] + ".";
+        } else if (motive.length === 3) {
+            motiveDisplay.innerHTML = "This attack was" + motive[0] + "," + motive[1] + " and" + motive[2] + ".";
+        }
     }
 
 
