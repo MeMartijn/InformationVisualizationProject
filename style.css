@@ -189,6 +189,11 @@ div.tooltip {
     pointer-events: none;
 }
 
+#infocontainer #motive {
+    font-size: 10px;
+    font-style: italic;
+}
+
 #bg {
     position: fixed;
     top: 50%;
@@ -201,3 +206,4 @@ div.tooltip {
     transform: translateX(-50%) translateY(-50%);
     transition: 1s opacity;
 }
+
