@@ -40,16 +40,16 @@
 </section>
 
 <nav id="map_methods">
-    <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0)' style='background-color: rgb(31, 119, 180)'/></div>
-    <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1)' style='background-color: rgb(255, 127, 14)'/></div>
-    <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2)' style='background-color: rgb(44, 160, 44)'/></div>
-    <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3)' style='background-color: rgb(214, 39, 40)'/></div>
-    <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4)' style='background-color: rgb(148, 103, 189)'/></div>
-    <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5)' style='background-color: rgb(140, 86, 75)'/></div>
-    <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6)' style='background-color: rgb(227, 119, 194)'/></div>
-    <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7)' style='background-color: rgb(127, 127, 127)'/></div>
-    <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8)' style='background-color: rgb(188, 189, 34)'/></div>
-    <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9)' style='background-color: rgb(23, 190, 207)'/></div>
+    <div><img src="assets/0.svg" id = 'attacktype0' data-attacktype="0" onClick='opacityFunction(0), backgroundActive(0), attacksFilter(0)' style='background-color: rgb(31, 119, 180)'/></div>
+    <div><img src="assets/1.svg" id = 'attacktype1' data-attacktype="1" onClick='opacityFunction(1), backgroundActive(1), attacksFilter(1)' style='background-color: rgb(255, 127, 14)'/></div>
+    <div><img src="assets/2.svg" id = 'attacktype2' data-attacktype="2" onClick='opacityFunction(2), backgroundActive(2), attacksFilter(2)' style='background-color: rgb(44, 160, 44)'/></div>
+    <div><img src="assets/3.svg" id = 'attacktype3' data-attacktype="3" onClick='opacityFunction(3), backgroundActive(3), attacksFilter(3)' style='background-color: rgb(214, 39, 40)'/></div>
+    <div><img src="assets/4.svg" id = 'attacktype4' data-attacktype="4" onClick='opacityFunction(4), backgroundActive(4), attacksFilter(4)' style='background-color: rgb(148, 103, 189)'/></div>
+    <div><img src="assets/5.svg" id = 'attacktype5' data-attacktype="5" onClick='opacityFunction(5), backgroundActive(5), attacksFilter(5)' style='background-color: rgb(140, 86, 75)'/></div>
+    <div><img src="assets/6.svg" id = 'attacktype6' data-attacktype="6" onClick='opacityFunction(6), backgroundActive(6), attacksFilter(6)' style='background-color: rgb(227, 119, 194)'/></div>
+    <div><img src="assets/7.svg" id = 'attacktype7' data-attacktype="7" onClick='opacityFunction(7), backgroundActive(7), attacksFilter(7)' style='background-color: rgb(127, 127, 127)'/></div>
+    <div><img src="assets/8.svg" id = 'attacktype8' data-attacktype="8" onClick='opacityFunction(8), backgroundActive(8), attacksFilter(8)' style='background-color: rgb(188, 189, 34)'/></div>
+    <div><img src="assets/9.svg" id = 'attacktype9' data-attacktype="9" onClick='opacityFunction(9), backgroundActive(9), attacksFilter(9)' style='background-color: rgb(23, 190, 207)'/></div>
 </nav>
 
 
@@ -165,6 +165,18 @@
         } else {
             id.style.backgroundColor = color(attackTypes[i]);
             id.style.transition = "all 1s";
+        }
+    }
+
+
+    // Change displayed circles on map
+    function attacksFilter(i) {
+        if (id.style.backgroundColor !== "white") {
+            d3.selectAll("circle[data-attacktype=" + i + "]")
+                .attr("fill-opacity", 0);
+        } else {
+            d3.selectAll("circle[data-attacktype=" + i + "]")
+                .attr("fill-opacity", 1.0);
         }
     }
 
