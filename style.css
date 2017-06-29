@@ -48,6 +48,7 @@ g.countries path {
     cursor: pointer;
     z-index: 99;
     transition: all 0.2s ease-in-out;
+    fill-opacity: 0;
 }
 
 /* === Styling for the surrounding nav blocks === */
@@ -102,6 +103,10 @@ nav div p {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     background: #fff;
     z-index: -1;
+}
+
+img[data-attacktype] {
+    transition: all 0.2s !important;
 }
 
 nav div:hover p {

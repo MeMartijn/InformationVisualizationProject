@@ -8,6 +8,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <style></style>
 </head>
 <body>
 
@@ -135,7 +136,6 @@
 
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
-        console.log(year);
         spinnerActive(true);
         currentYearViewer.value = year;
         d3
@@ -151,7 +151,7 @@
     function opacityFunction(i) {
         if (d3.select("#b-" + i).style("fill-opacity") == 0.2) {
             d3.select("#b-" + i).transition()
-                .duration(400)
+                .duration(200)
                 .style("fill-opacity", 1.0)
         } else {
             d3.select("#b-" + i).transition()
@@ -184,15 +184,30 @@
 
 
     // Change displayed circles on map
+    for (var i = 0; i < 10; i++) {
+        document.styleSheets[2].insertRule(".attackicon[data-attacktype='" + i + "'] {fill-opacity: 1.0;}", 0);
+    }
     function attacksFilter(i) {
         var id = document.getElementById('attacktype' + i);
         if (id.style.backgroundColor !== "white") {
-            d3.selectAll(".attackicon[data-attacktype='" + i + "']")
-                .attr("fill-opacity", 1.0);
+            document.styleSheets[2].insertRule(".attackicon[data-attacktype='" + i + "'] {fill-opacity: 1.0;}", 0);
         } else {
-            d3.selectAll(".attackicon[data-attacktype='" + i + "']")
-                .attr("fill-opacity", 0);
+            document.styleSheets[2].deleteRule(findRule(i));
         }
+    }
+
+
+    // Find css rule index on attacktype
+    function findRule(num) {
+        var cssRules = document.styleSheets[2].rules;
+        var ruleIndex;
+        for (var i = 0; i < cssRules.length; i++) {
+            if (cssRules[i].selectorText.indexOf(num.toString()) !== -1) {
+                ruleIndex = i;
+                break;
+            }
+        }
+        return ruleIndex;
     }
 
 
