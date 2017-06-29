@@ -58,6 +58,7 @@
     var attacksDataset = "dataset/attacktypes.csv",
         countriesDataset = "dataset/world_countries.json",
         attackTypes = ["Suicide Bombing", "Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Barricade Incident", "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"],
+        colorPalette = ["rgb(31, 119, 180)", "rgb(255, 127, 14)", "rgb(44, 160, 44)", "rgb(214, 39, 40)", "rgb(148, 103, 189)", "rgb(140, 86, 75)", "rgb(227, 119, 194)", "rgb(127, 127, 127)", "rgb(188, 189, 34)", "rgb(23, 190, 207)"],
         yearInput = document.querySelector("#timeslider"),
         countries = document.querySelectorAll(".datamaps-subunits path"),
         playButton = document.querySelector("#playbutton"),
@@ -96,6 +97,7 @@
         }, 200)
     });
 
+
     // Timing function
     playButton.addEventListener("click", function (event) {
 
@@ -113,6 +115,7 @@
 
     });
 
+
     // The actual handler for applying changes. Use the global year variable.
     function updateView() {
         console.log(year);
@@ -126,6 +129,7 @@
         loadGraphics(year);
     }
 
+
     // Opacity map function
     function opacityFunction(i) {
         if (d3.select("#b-" + i).style("fill-opacity") == 0.2) {
@@ -138,6 +142,7 @@
                 .style("fill-opacity", 0.2);
         }
     };
+
 
     function spinnerActive(active){
         if(active){
@@ -160,10 +165,12 @@
         }
     }
 
+
     // Tooltip
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
+
 
     // Area chart variables
     var margin = {
@@ -316,6 +323,7 @@
 
     });
 
+
     // Map variables
     var worldmap = d3.select("#map")
         .append("svg")
@@ -329,7 +337,7 @@
     var path = d3.geoPath().projection(projection);
     var killScale = d3.scaleLinear()
         .domain([0,1500])    // 1500 is the maximum kills per attack, counted in Python whilst generating the datasets
-        .range([0,200]);
+        .range([3,100]);
 
 
     // Generate map
@@ -377,14 +385,10 @@
 
                 attacks.forEach(function(d) {
                     d.year   =  +d["iyear"];
-                    d.type = attackTypes[+d["attacktype1"]];
                     d.typeno = +d["attacktype1"];
                     d.long  = +d["longitude"];
                     d.lat  = +d["latitude"];
                     d.sum  = d["summary"];
-                    d.crit1 = +d["crit1"];
-                    d.crit2 = +d["crit2"];
-                    d.crit3 = +d["crit3"];
                     d.group = d["gname"];
                     d.kills = +d["nkill"];
                 });
@@ -395,26 +399,28 @@
                     .selectAll("circle")
                     .data(attacks)
                     .enter()
-                    .append("svg:image")
-                    .attr("class", function(d) {
-                        return d.typeno + " attackicon";
+                    .append("circle")
+                    .attr("class", "attackicon")
+                    .attr("data-attacktype", function(d) {
+                        return d.typeno;
                     })
-                    .attr("xlink:href", function(d) {
-                        return "assets/" + d.typeno + ".svg";
+                    .attr("fill", function(d) {
+                        return colorPalette[n.typeno];
                     })
-                    .attr("width", function(d) {
-                        return 5 + killScale(d.kills);
+                    .attr("cx", function(d) {
+                        return projection([d.long,d.lat])[0];
                     })
-                    .attr("height", function(d) {
-                        return 5 + killScale(d.kills);
+                    .attr("cy", function(d) {
+                        return projection([d.long,d.lat])[1];
                     })
-                    .attr("transform", function(d) {
-                        return "translate(" + projection([d.long,d.lat]) + ")";
+                    .attr("r", function(d) {
+                        return killScale(d.kills);
                     })
                     .on("click", showTooltip);
                 spinnerActive(false);
             });
     }
+
 
     // Tooltip function
     function showTooltip(d) {
