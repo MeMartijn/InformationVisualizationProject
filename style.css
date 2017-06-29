@@ -40,8 +40,8 @@ g.countries path {
 .attackicon {
     cursor: pointer;
     z-index: 99;
+    transition: all 0.2s ease-in-out;
 }
-
 
 /* === Styling for the surrounding nav blocks === */
 nav {
