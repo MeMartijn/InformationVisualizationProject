@@ -6,4 +6,9 @@ The code in this repository is aimed at visualizing the [Global Terrorism Databa
 This visualization contains a stacked area chart and a world map. The datasets used are derived from the main database, but are edited and/or cleaned using Python. 
 
 ---
+## Screenshots
+![Imgur](http://i.imgur.com/tvpwwok.png)
+![Imgur](http://i.imgur.com/SsA6W2Y.png)
+
+---
 Our research was conducted by request of the University of Amsterdam's course Information Visualization. This course is part of the [Information Science](http://www.uva.nl/programmas/bachelors/informatiekunde/informatiekunde.html) track. 
