@@ -5,8 +5,6 @@ The code in this repository is aimed at visualizing the [Global Terrorism Databa
 
 This visualization contains a stacked area chart and a world map. The datasets used are derived from the main database, but are edited and/or cleaned using Python. 
 
-Live version can be found at the following link: https://d3-excercise.herokuapp.com/
-
 ---
 ## Screenshots
 ![Imgur](http://i.imgur.com/tvpwwok.png)
